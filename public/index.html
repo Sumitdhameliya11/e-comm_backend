@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Order Status Manipulation</h1>
+    <div>
+        <!-- http://localhost:3000/-->
+        <form action="http://localhost:5000/update_delivery_status">
+            <label for="status">Order Manipulation</label>
+            <input type="text" id="orderid" placeholder="Enter id of order">
+            <select name="status" id="status">
+                <option value="Placed">Orderd</option>
+                <option value="Shipped">Shipped</option>
+                <option value="Out for Delivery">Out for Delivery</option>
+                <option value="Delivered">Delivered</option>
+            </select>
+            <button type="submit" id="btn">Change Status</button>
+        </form>
+    </div>
+
+    <div class="div"></div>
+    <button class="btn1" onclick="getOrderDetails()">Show Order</button>
+
+    <script>
+
+        async function getOrderDetails() {
+            const response = await fetch(`http://localhost:5000/get_pay_order`);
+            if (response.ok) {
+                const data = await response.json();
+                const data1 = data?.result || []
+                console.log(data1[0]);
+                document.querySelector(".div").innerHTML = "user_id:" + " "+"order_id "+data1[0].id + data1[0].user_id + " " + "product_id:" + data1[0].product_id + " " + "Statues:" + data1[0].isdeliver;
+            } else {
+                console.error('Error fetching order details:', data.error);
+                // Handle error
+            }
+        }
+
+        const btn = document.getElementById("btn");
+        const status = document.getElementById("status");
+        const orderid = document.getElementById("orderid")
+
+
+
+        btn.addEventListener("click", async (e) => {
+            e.preventDefault();
+            const res = await fetch("http://localhost:5000/update_delivery_status", {
+                method: "POST",
+                headers: {
+                    'content-type': "application/json"
+                },
+                body: JSON.stringify({
+                    orderid: orderid.value,
+                    status: status.value
+                })
+            });
+
+            if (response.ok) {
+                console.log("Statues  successfully update");
+            }
+
+            const data = await res.json();
+            console.log(data)
+
+        })
+
+    </script>
+</body>
+
+</html>
